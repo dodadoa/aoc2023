@@ -5,9 +5,7 @@ fn answer1_1(reader: BufReader<File>) -> io::Result<()> {
     let mut sum = 0;
     for line in reader.lines() {
         let value = line.unwrap();
-        let list_ar: Vec<&str> = value
-            .matches(char::is_numeric)
-            .collect();
+        let list_ar: Vec<&str> = value.matches(char::is_numeric).collect();
         let num_to_sum = format!("{}{}", list_ar.first().unwrap(), list_ar.last().unwrap());
         sum = sum + num_to_sum.parse::<i32>().unwrap();
     }
