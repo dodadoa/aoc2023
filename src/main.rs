@@ -5,19 +5,10 @@ fn answer1_1(reader: BufReader<File>) -> io::Result<()> {
     let mut sum = 0;
     for line in reader.lines() {
         let value = line.unwrap();
-        let list_ar = value.split("").collect::<Vec<&str>>();
-        let list_str_num = list_ar
-            .into_iter()
-            .filter(|x| x.parse::<i32>().is_ok())
-            .collect::<Vec<&str>>();
-        let first = list_str_num.first().unwrap();
-        let last = if list_str_num.len() > 1 {
-            list_str_num.last().unwrap()
-        } else {
-            first
-        };
-
-        let num_to_sum = format!("{}{}", first, last);
+        let list_ar: Vec<&str> = value
+            .matches(char::is_numeric)
+            .collect();
+        let num_to_sum = format!("{}{}", list_ar.first().unwrap(), list_ar.last().unwrap());
         sum = sum + num_to_sum.parse::<i32>().unwrap();
     }
     println!("sum: {}", sum);
@@ -125,11 +116,11 @@ fn answer1_2(reader: BufReader<File>) -> io::Result<()> {
 }
 
 fn main() -> io::Result<()> {
-    let file_path = "./input/input1_2.txt";
+    let file_path = "./input/input1.txt";
     let file = File::open(file_path)?;
     let reader = BufReader::new(file);
 
-    let _ = answer1_2(reader);
+    let _ = answer1_1(reader);
 
     Ok(())
 }
