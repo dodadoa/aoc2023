@@ -21,17 +21,9 @@ fn answer1_2(reader: BufReader<File>) -> io::Result<()> {
     for line in reader.lines() {
         let value = line.unwrap();
 
-        let list_ar = value.split("").collect::<Vec<&str>>();
-        let list_str_num = list_ar
-            .into_iter()
-            .filter(|x| x.parse::<i32>().is_ok())
-            .collect::<Vec<&str>>();
-
-        println!("{}", value);
-
         let j: Vec<String> = vec![
-            "1", "2", "3", "4", "5", "6", "7", "8", "9", "one", "two", "three", "four", "five",
-            "six", "seven", "eight", "nine",
+            "1", "2", "3", "4", "5", "6", "7", "8", "9", 
+            "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
         ]
         .into_iter()
         .map(|x| x.to_owned())
@@ -61,53 +53,31 @@ fn answer1_2(reader: BufReader<File>) -> io::Result<()> {
             }
         }
 
-        if store_first == "one" {
-            store_first = "1".to_owned();
-        } else if store_first == "two" {
-            store_first = "2".to_owned();
-        } else if store_first == "three" {
-            store_first = "3".to_owned();
-        } else if store_first == "four" {
-            store_first = "4".to_owned();
-        } else if store_first == "five" {
-            store_first = "5".to_owned();
-        } else if store_first == "six" {
-            store_first = "6".to_owned();
-        } else if store_first == "seven" {
-            store_first = "7".to_owned();
-        } else if store_first == "eight" {
-            store_first = "8".to_owned();
-        } else if store_first == "nine" {
-            store_first = "9".to_owned();
-        } else if store_first == "zero" {
-            store_first = "0".to_owned();
+        fn to_numeric_string(val: String) -> String {
+            if val == "one" {
+                return "1".to_owned();
+            } else if val == "two" {
+                return "2".to_owned();
+            } else if val == "three" {
+                return "3".to_owned();
+            } else if val == "four" {
+                return "4".to_owned();
+            } else if val == "five" {
+                return "5".to_owned();
+            } else if val == "six" {
+                return "6".to_owned();
+            } else if val == "seven" {
+                return "7".to_owned();
+            } else if val == "eight" {
+                return "8".to_owned();
+            } else if val == "nine" {
+                return "9".to_owned();
+            } else  {
+                return val;
+            } 
         }
-
-        if store_last == "one" {
-            store_last = "1".to_owned();
-        } else if store_last == "two" {
-            store_last = "2".to_owned();
-        } else if store_last == "three" {
-            store_last = "3".to_owned();
-        } else if store_last == "four" {
-            store_last = "4".to_owned();
-        } else if store_last == "five" {
-            store_last = "5".to_owned();
-        } else if store_last == "six" {
-            store_last = "6".to_owned();
-        } else if store_last == "seven" {
-            store_last = "7".to_owned();
-        } else if store_last == "eight" {
-            store_last = "8".to_owned();
-        } else if store_last == "nine" {
-            store_last = "9".to_owned();
-        } else if store_last == "zero" {
-            store_last = "0".to_owned();
-        }
-
-        println!("first: {}, last: {}", store_first, store_last);
-
-        let to_sum = format!("{}{}", store_first, store_last);
+        
+        let to_sum = format!("{}{}", to_numeric_string(store_first), to_numeric_string(store_last));
         sum = sum + to_sum.parse::<i32>().unwrap();
     }
     println!("sum: {}", sum);
@@ -116,11 +86,11 @@ fn answer1_2(reader: BufReader<File>) -> io::Result<()> {
 }
 
 fn main() -> io::Result<()> {
-    let file_path = "./input/input1.txt";
+    let file_path = "./input/input1_2.txt";
     let file = File::open(file_path)?;
     let reader = BufReader::new(file);
 
-    let _ = answer1_1(reader);
+    let _ = answer1_2(reader);
 
     Ok(())
 }
