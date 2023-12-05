@@ -135,12 +135,57 @@ fn answer2_1(reader: BufReader<File>) -> io::Result<()> {
     Ok(())
 }
 
+fn answer2_2(reader: BufReader<File>) -> io::Result<()> {
+    fn get_max(vecs: &Vec<i32>) -> i32 {
+        if vecs.len() == 0 {
+            return 0;
+        }
+        return vecs.iter().max().unwrap().to_owned();
+    }
+
+    let mut sum_game_mult = 0;
+
+    for line in reader.lines() {
+        let value = line.unwrap();
+        let (game, bags) = value.split_at(value.find(":").unwrap() + 2);
+        let list_of_bag = bags.split("; ").collect::<Vec<&str>>();
+        let mut multiplied = 1;
+        let collections = list_of_bag
+            .iter()
+            .fold(HashMap::<&str, Vec<i32>>::new(), |mut acc, x| {
+                let bags_each = x.split(", ").collect::<Vec<&str>>();
+                for bag in bags_each {
+                    let (val, key) = bag.split_at(bag.find(" ").unwrap());
+                    if acc.contains_key(key.trim()) {
+                        let mut val_vec = acc.get(key.trim()).unwrap().to_owned();
+                        val_vec.push(val.parse::<i32>().unwrap());
+                        acc.insert(key.trim(), val_vec);
+                    } else {
+                        acc.insert(key.trim(), vec![val.parse::<i32>().unwrap()]);
+                    }
+                }
+                acc
+            });
+
+        multiplied = multiplied * get_max(&collections["red"]) 
+            * get_max(&collections["green"]) 
+            * get_max(&collections["blue"]);
+        println!("{}", multiplied);
+
+        sum_game_mult = sum_game_mult + multiplied;
+    }
+
+    println!("sum: {}", sum_game_mult);
+
+    Ok(())
+}
+
 fn main() -> io::Result<()> {
-    let file_path = "./input/input2.txt";
+    let file_path = "./input/input2_2.txt";
     let file = File::open(file_path)?;
     let reader = BufReader::new(file);
 
-    let _ = answer2_1(reader);
+    let _ = answer2_2(reader);
 
     Ok(())
 }
