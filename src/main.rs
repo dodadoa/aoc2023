@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fs::File;
 use std::io::{self, prelude::*, BufReader};
 
@@ -83,12 +84,63 @@ fn answer1_2(reader: BufReader<File>) -> io::Result<()> {
     Ok(())
 }
 
+fn answer2_1(reader: BufReader<File>) -> io::Result<()> {
+    fn check_configure(vecs: &Vec<i32>, max_nums: i32) -> bool {
+        let mut is_possible = true;
+        for num_string in vecs.iter() {
+            if num_string > &max_nums {
+                is_possible = false;
+            }
+        }
+        is_possible
+    }
+
+    let mut sum_game_id = 0;
+
+    for line in reader.lines() {
+        let value = line.unwrap();
+        let (game, bags) = value.split_at(value.find(":").unwrap() + 2);
+        let list_of_bag = bags.split("; ").collect::<Vec<&str>>();
+        let mut is_possible = true;
+        let collections = list_of_bag
+            .iter()
+            .fold(HashMap::<&str, Vec<i32>>::new(), |mut acc, x| {
+                let bags_each = x.split(", ").collect::<Vec<&str>>();
+                for bag in bags_each {
+                    let (val, key) = bag.split_at(bag.find(" ").unwrap());
+                    if acc.contains_key(key.trim()) {
+                        let mut val_vec = acc.get(key.trim()).unwrap().to_owned();
+                        val_vec.push(val.parse::<i32>().unwrap());
+                        acc.insert(key.trim(), val_vec);
+                    } else {
+                        acc.insert(key.trim(), vec![val.parse::<i32>().unwrap()]);
+                    }
+                }
+                acc
+            });
+
+        is_possible = is_possible && check_configure(&collections["red"], 12) &&
+            check_configure(&collections["green"], 13) &&
+            check_configure(&collections["blue"], 14);
+        if is_possible {
+            println!("{}", game);
+            sum_game_id = sum_game_id + game.chars()
+                .filter(|x| x.is_numeric())
+                .collect::<String>()
+                .parse::<i32>().unwrap();
+        }
+    }
+    println!("sum: {}", sum_game_id);
+
+    Ok(())
+}
+
 fn main() -> io::Result<()> {
-    let file_path = "./input/input1_2.txt";
+    let file_path = "./input/input2.txt";
     let file = File::open(file_path)?;
     let reader = BufReader::new(file);
 
-    let _ = answer1_2(reader);
+    let _ = answer2_1(reader);
 
     Ok(())
 }
